@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+
+
+    <title>User Login</title>
+</head>
+
+<body>
+    <div class="parent">
+        <div class="child">
+            <h2 class="headingLogin">Confirm Your Password</h2>
+            <form>
+                <div class="container">
+                    <!-- <label>Password : </label> -->
+
+                    <!-- <input type="email" class="form-inputs" placeholder="Enter email" name="email" id="email" required> -->
+                    <input type="password" class="form-inputs" placeholder="Enter Password" name="password" id="pass" required>
+                    <button type="submit" class="btnLogin" id="btnLogin">Log In</button>
+                </div>
+            </form>
+            <!-- </hr>
+            <p>OR</p> -->
+        </div>
+    </div>
+    <script>
+        const btnLogin = document.getElementById("btnLogin");
+        const input = document.getElementById("pass");
+        // const email = document.getElementById("email");
+        btnLogin.addEventListener('click', (e) => {
+            e.preventDefault()
+            fetch('/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        password: input.value,
+                        // email: email.value
+                    })
+                })
+                .then(response => {
+                    response.json()
+                    if (response.status === 404) {
+                        alert("Invalid Password")
+                    } else {
+                        alert("Logged in")
+                        window.location.href = "/chat"
+                    }
+
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+
+</html>
