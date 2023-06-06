@@ -225,6 +225,6 @@
         border-radius: 0;
     }
     .chatArea {
-        height: 600px;
+        height: 100%;
     }
 }
