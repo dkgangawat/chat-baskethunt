@@ -44,6 +44,7 @@
 }
 
 .chatArea {
+    z-index: 0;
     height: 100%;
     padding: 16px;
     display: flex;
@@ -68,6 +69,7 @@
     display: flex;
     flex-direction: column;
     align-items: end;
+    z-index: 10;
 }
 
 .send-container {
@@ -153,6 +155,7 @@
 
 .settings {
     position: relative;
+    z-index: 10;
 }
 
 .settings .profile-menu {
@@ -226,5 +229,13 @@
     }
     .chatArea {
         height: 100%;
+    }
+    .send-container {
+        width: 95%;
+        position: fixed;
+        bottom: 8px;
+        border-radius: 8px;
+        margin: 8px;
+        overflow: hidden;
     }
 }
