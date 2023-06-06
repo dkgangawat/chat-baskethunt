@@ -23,17 +23,17 @@
     flex-flow: column;
     overflow: hidden;
     position: relative;
-    margin-bottom: 70px;
-    margin-top: 70px;
+    /* margin-bottom: 70px; */
 }
 
 .chat-header {
     height: 70px;
     width: 100%;
-    background-color: #5D5B8D;
+    background-color: #5d5b8d6a;
     display: flex;
     align-items: center;
     padding: 10px;
+    backdrop-filter: blur(5px);
 }
 
 .chat-header .username {
@@ -50,6 +50,18 @@
     flex-direction: column;
     overflow-y: auto;
     padding-top: 40px;
+    margin-bottom: 40px;
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #888;
+    /* Color of the scrollbar handle */
+    border-radius: 4px;
+    /* Rounded corners of the scrollbar handle */
 }
 
 .lastCol {
@@ -84,7 +96,8 @@
 }
 
 .btnSend {
-    background-color: #8F8BE8;
+    /* background-color: #8F8BE8; */
+    background-color: #5d5b8d6a;
     width: 80px;
     height: 100%;
     color: white;
