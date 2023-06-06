@@ -27,7 +27,6 @@ usersCollection
             // Insert sample users
             const pass1 = await hashPass('password1')
             const pass2 = await hashPass('password2')
-            console.log('pass1 is', pass1)
             const users = [{
                     username: 'user1',
                     password: pass1,

@@ -95,8 +95,8 @@ logout_btn.addEventListener('click', () => {
         })
         .then(response => {
             if (response.ok) {
-                alert('Logout successful')
-                console.log('Logout successful');
+                // alert('Logout successful')
+                // console.log('Logout successful');
                 window.location.href = '/'
             } else {
                 alert('something went wrong! try again')

@@ -39,7 +39,6 @@ const authenticateMiddleware = async(req, res, next) => {
                 res.redirect('/');
                 return;
             }
-            console.log(decodedToken)
             req.user = decodedToken;
             req.token = token;
 
@@ -68,28 +67,30 @@ app.post('/', async(req, res) => {
         const { password } = req.body;
 
         const querySnapshot = await usersCollection.get();
-        if (querySnapshot.empty) {
-            console.log('User not found');
-            return res.status(404).send({ message: "User not found" });
-        }
 
-
-        querySnapshot.forEach(async(doc) => {
+        let isLogedIn = false;
+        for (const doc of querySnapshot.docs) {
             const user = doc.data();
             const isPasswordValid = await bcrypt.compare(password, user.password);
 
             if (isPasswordValid) {
                 const token = jwt.sign(user, 'deepakdeepakdeepakdeepakdeepakdeepak', { expiresIn: '3m' });
+                isLogedIn = true;
                 res.cookie('token', token, { maxAge: 180000, httpOnly: true });
-                return res.status(200).send({ message: "logged in" });
+                return res.status(200).send({ message: 'logged in' });
             }
-        });
+        }
+
+        if (!isLogedIn) {
+            console.log('User not found');
+            return res.status(404).send({ message: 'User not found' });
+        }
     } catch (error) {
-        console.log("catch error")
         console.log('Error in login', error);
         return res.status(500).send('Something went wrong');
     }
 });
+
 
 
 
@@ -119,8 +120,7 @@ app.post('/updateprofile', upload.single('photo'), async(req, res) => {
         const bucket = storage.bucket();
         const fileName = `${req.body.uid}`; // Use the original filename
 
-        // Upload the file to Firebase Storage
-        // console.log(req.body)
+
         const uploadedFile = await bucket.upload(file.path, {
             destination: `photos/${fileName}`,
             metadata: {
@@ -176,6 +176,13 @@ io.on('connection', (socket) => {
         const user = socket.user;
         // Store the message in the database
         const messagesRef = db.collection("messages");
+        io.emit('chatMessage', {
+            id: user.id,
+            sender_name: user.username,
+            content: message,
+            timestamp: new Date(),
+
+        })
         messagesRef.add({
                 sender_id: user.id,
                 sender_name: user.username,
@@ -183,16 +190,7 @@ io.on('connection', (socket) => {
                 timestamp: new Date(),
             })
             .then(() => {
-                console.log('Message stored successfully');
-
-                // Broadcast the message to all connected clients
-                io.emit('chatMessage', {
-                    id: user.id,
-                    sender_name: user.username,
-                    content: message,
-                    timestamp: new Date(),
-
-                });
+                console.log('Message stored successfully');;
             })
             .catch((error) => {
                 console.error('Error storing message:', error);
