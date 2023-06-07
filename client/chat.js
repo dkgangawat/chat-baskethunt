@@ -1,7 +1,17 @@
 var user = null
     // ___________________________________________________________________
     //user settings page
+// loader...........
+var myVar;
 
+function myFunction() {
+	myVar = setTimeout(showPage, 350);
+}
+
+function showPage() {
+	document.getElementById("loader").style.display = "none";
+	document.getElementById("myDiv").style.display = "block";
+}
 
 fetch('/user/data', {
         method: "POST"
