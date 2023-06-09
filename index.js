@@ -160,6 +160,8 @@ app.post('/updateprofile', upload.single('photo'), async(req, res) => {
     }
 })
 
+app.use('/admin', require('./Routes/Admin'))
+
 // ----------------------------------------------------------------------------------
 // Socket.IO
 io.on('connection', (socket) => {
