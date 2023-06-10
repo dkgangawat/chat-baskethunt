@@ -75,3 +75,46 @@ button:hover {
         border: none;
     }
 }
+.admin-login a {
+    display: inline-block;
+    padding: 5px 16px;
+    text-decoration: none;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    color: blue;
+    transition: background-color 0.3s ease;
+  }
+  .btn1Login {
+    width: 35%;
+    color: white;
+    padding: 10px;
+    margin: 10px 0 10px 0;
+    border: 0px;
+    cursor: pointer;
+    font-weight: bolder;
+    border-radius: 8px;
+    background: #201A30;
+    box-shadow: 6px 6px 29px #0d0b14, -6px -6px 29px #33294c;
+}
+.password-container {
+    position: relative;
+  }
+  
+  .eye-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+  
+  .eye-icon i {
+    font-size: 18px;
+    color: #999;
+  }
+  
+  .form-inputs {
+    padding-right: 30px; /* Adjust the padding to make room for the eye icon */
+  }
+  
