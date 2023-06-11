@@ -45,6 +45,15 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.2.0/socket.io.js"></script>
     <script src="chat.js"></script>
+    <script>
+        function reloadOnVisibilityChange() {
+          if (!document.hidden) {
+            location.reload();
+          }
+        }
+  
+        window.addEventListener('visibilitychange', reloadOnVisibilityChange);
+      </script>
 </body>
 
 </html>
