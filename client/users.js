@@ -26,7 +26,7 @@ function renderUserTable(e) {
         const row = document.createElement("tr");
 
         const nameCell = document.createElement("td");
-        nameCell.textContent = user.username;
+        nameCell.innerHTML = `<div class='user-info'><img src=${user.photoURL} class='userPhoto' alt='user Profile photo'> <p>${user.username}</p></div>`
         row.appendChild(nameCell);
 
         const emailCell = document.createElement("td");
@@ -37,6 +37,8 @@ function renderUserTable(e) {
         const editBtn = document.createElement("button");
         editBtn.classList.add("btn", "btn-primary");
         editBtn.textContent = "Edit";
+        editBtn.disabled = true
+        editBtn.disabled ? editBtn.classList.add('btn-disabled') : ""
         editBtn.addEventListener("click", () => showEditPopup(user));
         actionsCell.appendChild(editBtn);
 
@@ -88,27 +90,38 @@ function hidePopup() {
 }
 
 // Function to handle creating a new user
-function createUser() {
+async function createUser(e) {
+    e.preventDefault()
     const userForm = document.getElementById("userForm");
     const nameInput = document.getElementById("name");
     const emailInput = document.getElementById("email");
+    const passInput = document.getElementById("password")
 
-    const name = nameInput.value.trim();
+    const username = nameInput.value.trim();
     const email = emailInput.value.trim();
+    const password = passInput.value.trim()
 
-    if (name && email) {
-        // Generate a unique ID for the new user (in a real application, this would be done by the server)
-        const id = Math.floor(Math.random() * 100000);
 
+    if (username && email && password) {
         const newUser = {
-            id,
-            name,
+            username,
+            password,
             email
         };
-        users.push(newUser);
 
-        renderUserTable();
-        hidePopup();
+        console.log(username, email, password)
+        const res = await fetch('/admin/adduser', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newUser)
+        })
+        console.log(res)
+            // users.push(newUser);
+
+        // renderUserTable();
+        // hidePopup();
     }
 }
 
@@ -141,11 +154,24 @@ function updateUser(user) {
 }
 
 // Function to delete a user
-function deleteUser(id) {
-    const userIndex = users.findIndex(user => user.id === id);
-    if (userIndex !== -1) {
-        users.splice(userIndex, 1);
-        renderUserTable();
+async function deleteUser(id) {
+    try {
+        const userIndex = users.findIndex(user => user.id === id);
+        console.log(id)
+        const response = await fetch(`/admin/users/${id}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            alert('User deleted successfully');
+            users.splice(userIndex, 1);
+            renderUserTable();
+        } else {
+            alert('something went wrong')
+            console.error('Error deleting user:', response.status);
+        }
+    } catch (error) {
+        console.error('Error deleting user:', error);
     }
 }
 
@@ -153,7 +179,8 @@ function deleteUser(id) {
 // Render the initial table
 // }
 async function initialize() {
-    console.log("waiting")
+    const userTableBody = document.getElementById("userTableBody");
+    userTableBody.innerHTML = "Loading...."
     await fetchUsers()
     renderUserTable()
     console.log("done")

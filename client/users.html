@@ -44,7 +44,11 @@
         <!-- Main Content -->
         <div class="content">
             <h1>User Management</h1>
-            <button class="btn btn-primary add-user-btn" onclick="showPopup('Create User', createUser)">Add User</button>
+            <div class="btn-group">
+                <button class="btn btn-primary add-user-btn" onclick="showPopup('Create User', createUser)">Add User</button>
+
+            </div>
+
             <div class="table-container">
                 <table>
                     <thead>
@@ -61,14 +65,11 @@
             </div>
             <div class="popup-overlay" id="popupOverlay">
                 <div class="popup" id="popup">
-                    <h2 id="popupTitle">Create User</h2>
-                    <form id="userForm">
-                        <label for="name">Name:</label>
-                        <label for="email">Email:</label>
-                        <input type="text" id="name" required><br><br>
-                        <input type="email" id="email" required><br><br>
-                        <label for="password">Password:</label>
-                        <input type="password" id="password" required><br><br>
+                    <h2 class="form-heading" id="popupTitle">Create User</h2>
+                    <form id="userForm" class="add-user-form">
+                        <input type="text" id="name" placeholder="User Name" required>
+                        <input type="email" placeholder="email" id="email" required>
+                        <input type="password" placeholder="password" id="password" required>
                         <button class="btn btn-primary" id="submitBtn">Submit</button>
                         <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
                     </form>

@@ -1,14 +1,17 @@
      /* Styles for table and pop-up */
      
      .table-container {
-         border-radius: 15px;
-         background: #ffffff;
-         box-shadow: 33px 33px 74px #f0f0f0, -33px -33px 74px #ffffff;
+         border-radius: 6px;
+         background: #F4F7FE;
+         box-shadow: 5px 5px 10px #d9dce2, -5px -5px 10px #ffffff;
+         width: 80%;
+         margin: auto;
      }
      
      table {
          width: 100%;
          border-collapse: collapse;
+         font-size: 20px;
      }
      
      th,
@@ -18,16 +21,35 @@
          border-bottom: 1px solid #ddd;
      }
      
+     .user-info {
+         display: inline-flex;
+         align-items: center;
+         gap: 0.8rem;
+     }
+     
+     .userPhoto {
+         width: 53px;
+         height: 53px;
+         border-radius: 50%;
+     }
+     
      .btn {
-         padding: 8px 12px;
+         padding: 10px 20px;
          border: none;
          border-radius: 4px;
          cursor: pointer;
+         font-size: medium;
+         margin-right: 4px;
+     }
+     
+     .btn-disabled {
+         opacity: 0.4;
      }
      
      .btn-primary {
          background-color: #4CAF50;
          color: white;
+         font-weight: 600;
      }
      
      .btn-secondary {
@@ -68,7 +90,30 @@
          visibility: visible;
      }
      
-     .add-user-btn {
-         float: right;
-         margin-bottom: 10px;
+     .form-heading {
+         margin-bottom: 20px;
+     }
+     
+     .add-user-form {
+         width: 100%;
+     }
+     
+     .add-user-form input {
+         width: 80%;
+         margin: auto;
+         height: 48px;
+         margin-bottom: 20px;
+         padding: 4px;
+         font-size: 20px;
+         outline: none;
+         border: 2px solid #f0f0f0;
+         display: block;
+     }
+     
+     .btn-group {
+         display: flex;
+         flex-direction: row-reverse;
+         width: 80%;
+         margin: auto;
+         margin-bottom: 2rem;
      }
