@@ -1,16 +1,16 @@
 var user = null
     // ___________________________________________________________________
     //user settings page
-// loader...........
+    // loader...........
 var myVar;
 
 function myFunction() {
-	myVar = setTimeout(showPage, 350);
+    myVar = setTimeout(showPage, 350);
 }
 
 function showPage() {
-	document.getElementById("loader").style.display = "none";
-	document.getElementById("myDiv").style.display = "block";
+    document.getElementById("loader").style.display = "none";
+    document.getElementById("myDiv").style.display = "block";
 }
 
 fetch('/user/data', {
@@ -19,6 +19,7 @@ fetch('/user/data', {
     .then(res => res.json())
     .then(data => {
         user = data
+        console.log(user.photoURL)
 
         document.getElementById("username").innerHTML = user.username
         document.getElementById("Profile_username").innerHTML = user.username

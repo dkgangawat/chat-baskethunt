@@ -117,11 +117,9 @@ async function createUser(e) {
             },
             body: JSON.stringify(newUser)
         })
-        console.log(res)
-            // users.push(newUser);
-
-        // renderUserTable();
-        // hidePopup();
+        users.push(newUser);
+        hidePopup();
+        initialize()
     }
 }
 
@@ -183,7 +181,6 @@ async function initialize() {
     userTableBody.innerHTML = "Loading...."
     await fetchUsers()
     renderUserTable()
-    console.log("done")
 
 }
 initialize();
