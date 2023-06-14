@@ -117,3 +117,15 @@
          margin: auto;
          margin-bottom: 2rem;
      }
+     .add-user-form select {
+        width: 80%;
+        margin: auto;
+        height: 48px;
+        margin-bottom: 20px;
+        padding: 4px;
+        font-size: 20px;
+        outline: none;
+        border: 2px solid #f0f0f0;
+        display: block;
+    }
+    
