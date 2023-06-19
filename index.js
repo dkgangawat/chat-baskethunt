@@ -13,6 +13,7 @@ require('dotenv').config()
 
 
 
+
 const PORT = process.env.PORT || 8080
 
 
@@ -165,9 +166,11 @@ app.post('/updateprofile', upload.single('photo'), async(req, res) => {
 })
 
 app.use('/admin', require('./Routes/Admin'))
-
-// ----------------------------------------------------------------------------------
-// Socket.IO
+app.get('/users', require('./middlewares/adminAuth'), (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'client', 'users.html'))
+    })
+    // ----------------------------------------------------------------------------------
+    // Socket.IO
 io.on('connection', (socket) => {
     console.log('A user connected');
 
@@ -183,6 +186,7 @@ io.on('connection', (socket) => {
     // Handle incoming chat messages
     socket.on('chatMessage', (message) => {
         const user = socket.user;
+
         // Store the message in the database
         const messagesRef = db.collection("messages");
         io.emit('chatMessage', {

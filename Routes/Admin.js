@@ -3,17 +3,48 @@ const router = express.Router();
 const path = require('path');
 const { admin, db, storage } = require('../firebase');
 const bcrypt = require('bcrypt');
-
+const jwt = require('jsonwebtoken')
 
 const usersCollection = db.collection('users');
 
 // Serve the admin.html file for the root route
-router.get('/', (req, res) => {
+router.get('/', require('../middlewares/adminAuth'), (req, res) => {
     res.sendFile(path.resolve(__dirname, '..', 'client', 'admin.html'));
+});
+router.get('/users', require('../middlewares/adminAuth'), (req, res) => {
+    res.sendFile(path.resolve(__dirname, '..', 'client', 'users.html'))
+})
+router.post('/login', async(req, res) => {
+    try {
+        const { password } = req.body;
+
+        const querySnapshot = await usersCollection.get();
+
+        let isLogedIn = false;
+        for (const doc of querySnapshot.docs) {
+            const user = doc.data();
+            const isPasswordValid = await bcrypt.compare(password, user.password);
+            console.log((isPasswordValid && user.admin))
+            if (isPasswordValid && user.admin) {
+                const token = jwt.sign(user, 'deepakdeepakdeepakdeepakdeepakdeepak', { expiresIn: '3m' });
+                isLogedIn = true;
+                res.cookie('token', token, { maxAge: 180000, httpOnly: true });
+                return res.status(200).send({ message: 'logged in' });
+            }
+        }
+
+        if (!isLogedIn) {
+            console.log('User not found');
+            return res.status(404).send({ message: 'User not found' });
+        }
+    } catch (error) {
+        console.log('Error in login', error);
+        return res.status(500).send('Something went wrong');
+    }
 });
 
 // Handle POST request for /users
-router.post('/users', async(req, res) => {
+router.post('/users', require('../middlewares/adminAuth'), async(req, res) => {
     try {
         const querySnapshot = await usersCollection.get();
         const users = querySnapshot.docs.map((doc) => doc.data());
@@ -29,7 +60,7 @@ const hashPass = async(pass) => {
     return encryptedPass;
 
 }
-router.post('/adduser', async(req, res) => {
+router.post('/adduser', require('../middlewares/adminAuth'), async(req, res) => {
     const { username, email, password } = req.body;
 
     try {
@@ -63,7 +94,7 @@ router.post('/adduser', async(req, res) => {
 });
 
 
-router.delete('/users/:id', async(req, res) => {
+router.delete('/users/:id', require('../middlewares/adminAuth'), async(req, res) => {
     const userId = req.params.id;
     console.log(userId)
 

@@ -155,7 +155,6 @@ function updateUser(user) {
 async function deleteUser(id) {
     try {
         const userIndex = users.findIndex(user => user.id === id);
-        console.log(id)
         const response = await fetch(`/admin/users/${id}`, {
             method: 'DELETE'
         });

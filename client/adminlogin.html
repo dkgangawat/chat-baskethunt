@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    
+
 
     <title>User Login</title>
 </head>
@@ -23,38 +23,38 @@
                         <span class="eye-icon" onclick="togglePasswordVisibility()">
                           <i class="fas fa-eye"></i>
                         </span>
-                      </div>
-                       
-                     <p id="invalid-pass" style="font-size: 12px; color: rgb(249, 74, 74); width: 100% ; text-align: left; position: relative; top: -4px; display: none;">invalid password</p>
+                    </div>
+
+                    <p id="invalid-pass" style="font-size: 12px; color: rgb(249, 74, 74); width: 100% ; text-align: left; position: relative; top: -4px; display: none;">invalid password</p>
                     <button type="submit" class="btn1Login" id="btnLogin">Admin Login</button>
-                </div>     
+                </div>
             </form>
         </div>
     </div>
     <script>
         function togglePasswordVisibility() {
-    var passwordInput = document.getElementById("pass");
-    var eyeIcon = document.querySelector(".eye-icon i");
+            var passwordInput = document.getElementById("pass");
+            var eyeIcon = document.querySelector(".eye-icon i");
 
-    if (passwordInput.type === "password") {
-        passwordInput.type = "text";
-        eyeIcon.classList.remove("fa-eye");
-        eyeIcon.classList.add("fa-eye-slash");
-    } else {
-        passwordInput.type = "password";
-        eyeIcon.classList.remove("fa-eye-slash");
-        eyeIcon.classList.add("fa-eye");
-    }
-}
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
+        }
 
         const btnLogin = document.getElementById("btnLogin");
         const input = document.getElementById("pass");
-        btnLogin.addEventListener('click', async (e) => {
+        btnLogin.addEventListener('click', async(e) => {
             e.preventDefault(); // Prevent form submission
             btnLogin.disabled = true;
             btnLogin.style.opacity = "0.4";
             try {
-                const response = await fetch('/', {
+                const response = await fetch('/admin/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -67,7 +67,7 @@
                 if (response.ok) {
                     input.style.border = "2px solid green";
                     document.getElementById("invalid-pass").style.display = "none";
-                    window.location.href = "admin.html"; // Redirect to admin.html
+                    window.location.href = "/admin"; // Redirect to admin.html
                 } else {
                     input.style.border = "2px solid rgb(249, 74, 74)";
                     document.getElementById("invalid-pass").style.display = "block";
@@ -81,6 +81,7 @@
             }
         });
     </script>
-    
+
 </body>
+
 </html>
