@@ -15,9 +15,8 @@ async function fetchUsers() {
     }
 }
 
-
 // Function to render the user table
-function renderUserTable(e) {
+function renderUserTable() {
     const userTableBody = document.getElementById("userTableBody");
 
     userTableBody.innerHTML = "";
@@ -37,8 +36,6 @@ function renderUserTable(e) {
         const editBtn = document.createElement("button");
         editBtn.classList.add("btn", "btn-primary");
         editBtn.textContent = "Edit";
-        editBtn.disabled = true
-        editBtn.disabled ? editBtn.classList.add('btn-disabled') : ""
         editBtn.addEventListener("click", () => showEditPopup(user));
         actionsCell.appendChild(editBtn);
 
@@ -91,37 +88,63 @@ function hidePopup() {
 
 // Function to handle creating a new user
 async function createUser(e) {
-    e.preventDefault()
+    e.preventDefault();
     const userForm = document.getElementById("userForm");
     const nameInput = document.getElementById("name");
     const emailInput = document.getElementById("email");
-    const passInput = document.getElementById("password")
-
+    const passInput = document.getElementById("password");
+    const genderSelect = document.getElementById("gender");
+  
     const username = nameInput.value.trim();
     const email = emailInput.value.trim();
-    const password = passInput.value.trim()
-
-
-    if (username && email && password) {
-        const newUser = {
-            username,
-            password,
-            email
-        };
-
-        console.log(username, email, password)
-        const res = await fetch('/admin/adduser', {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(newUser)
-        })
+    const password = passInput.value.trim();
+    const gender = genderSelect.value; // Get the selected gender
+  
+    if (username && email && password && gender) {
+      const newUser = {
+        username,
+        password,
+        email,
+        gender, // Add the gender property to the newUser object
+      };
+  
+      console.log(username, email, password, gender);
+      const res = await fetch("/admin/adduser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newUser),
+      });
+  
+      if (res.ok) {
+        // Clear input fields
+        nameInput.value = "";
+        emailInput.value = "";
+        passInput.value = "";
+  
+        // Clear cache and cookies
+        sessionStorage.clear();
+        localStorage.clear();
+        document.cookie = "";
+  
+        // Update the newUser object with the photoURL property based on the gender
+        newUser.photoURL =
+          gender === "female"
+            ? "https://creazilla-store.fra1.digitaloceanspaces.com/icons/7914838/woman-icon-md.png"
+            : "https://creazilla-store.fra1.digitaloceanspaces.com/icons/7914927/man-icon-md.png";
+  
         users.push(newUser);
         hidePopup();
-        initialize()
+        renderUserTable();
+        location.reload();// Refresh the page
+      } else {
+        alert("Something went wrong");
+        console.error("Error creating user:", res.status);
+      }
     }
-}
+  }
+  
 
 // Function to show the edit user popup
 function showEditPopup(user) {
@@ -129,13 +152,15 @@ function showEditPopup(user) {
 
     const nameInput = document.getElementById("name");
     const emailInput = document.getElementById("email");
+    const submitBtn = document.getElementById("submitBtn");
 
     nameInput.value = user.username;
     emailInput.value = user.email;
+    submitBtn.textContent = "Update";
 }
 
 // Function to update an existing user
-function updateUser(user) {
+async function updateUser(user) {
     const nameInput = document.getElementById("name");
     const emailInput = document.getElementById("email");
 
@@ -143,11 +168,26 @@ function updateUser(user) {
     const newEmail = emailInput.value.trim();
 
     if (newName && newEmail) {
-        user.name = newName;
-        user.email = newEmail;
+        const updatedUser = { ...user, username: newName, email: newEmail };
 
-        renderUserTable();
-        hidePopup();
+        const response = await fetch(`/admin/users/${user.id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedUser),
+        });
+
+        if (response.ok) {
+            user.username = newName;
+            user.email = newEmail;
+            renderUserTable();
+            hidePopup();
+            location.reload(); // Refresh the page
+        } else {
+            alert("Something went wrong");
+            console.error("Error updating user:", response.status);
+        }
     }
 }
 
@@ -164,7 +204,7 @@ async function deleteUser(id) {
             users.splice(userIndex, 1);
             renderUserTable();
         } else {
-            alert('something went wrong')
+            alert('Something went wrong');
             console.error('Error deleting user:', response.status);
         }
     } catch (error) {
@@ -172,14 +212,12 @@ async function deleteUser(id) {
     }
 }
 
-
 // Render the initial table
-// }
 async function initialize() {
     const userTableBody = document.getElementById("userTableBody");
-    userTableBody.innerHTML = "Loading...."
-    await fetchUsers()
-    renderUserTable()
-
+    userTableBody.innerHTML = "Loading....";
+    await fetchUsers();
+    renderUserTable();
 }
+
 initialize();
