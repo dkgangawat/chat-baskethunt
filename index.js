@@ -9,7 +9,7 @@ const cookieParser = require('cookie-parser');
 const multer = require('multer');
 const fs = require('fs');
 require('dotenv').config()
-
+const { v4: uuidv4 } = require("uuid");
 
 
 
@@ -171,47 +171,97 @@ app.get('/users', require('./middlewares/adminAuth'), (req, res) => {
     })
     // ----------------------------------------------------------------------------------
     // Socket.IO
-io.on('connection', (socket) => {
-    console.log('A user connected');
-
-    // Fetch and emit previous messages on connection
-    const messagesRef = db.collection("messages");
-    messagesRef.orderBy("timestamp", 'asc').get().then((snapshot) => {
-        snapshot.forEach((message) => {
-            const previousMessages = message.data();
-            socket.emit('previousMessages', [previousMessages]);
-        })
-    });
-
-    // Handle incoming chat messages
-    socket.on('chatMessage', (message) => {
-        const user = socket.user;
-
-        // Store the message in the database
+    io.on('connection', (socket) => {
+        console.log('A user connected');
+    
+        // Fetch and emit previous messages on connection
         const messagesRef = db.collection("messages");
-        io.emit('chatMessage', {
-            id: user.id,
+        messagesRef.orderBy("timestamp", 'asc').get().then((snapshot) => {
+            snapshot.forEach((message) => {
+                const previousMessages = message.data();
+                socket.emit('previousMessages', [previousMessages]);
+            })
+        });
+    
+        // Handle incoming chat messages
+        socket.on('chatMessage', (message) => {
+            const user = socket.user;
+    
+            // Store the message in the database
+            const messagesRef = db.collection("messages");
+        const messageId = uuidv4();
+    
+        messagesRef
+          .add({
+            message_id: messageId,
+            sender_id: user.id,
             sender_name: user.username,
             content: message,
             timestamp: new Date(),
-
-        })
-        messagesRef.add({
-                sender_id: user.id,
-                sender_name: user.username,
-                content: message,
-                timestamp: new Date(),
-            })
-            .then(() => {
-                console.log('Message stored successfully');;
-            })
-            .catch((error) => {
-                console.error('Error storing message:', error);
+          })
+          .then(() => {
+            console.log("Message stored successfully");
+    
+            // Broadcast the message to all connected clients
+            io.emit("chatMessage", {
+              message_id: messageId,
+              id: user.id,
+              sender_name: user.username,
+              content: message,
+              timestamp: new Date(),
             });
+          })
+          .catch((error) => {
+            console.error("Error storing message:", error);
+          });
+        });
+    
+        socket.on("deleteMessage", (message_id) => {
+            const messagesRef = db.collection("messages");
+            // Find the message(s) with the matching message_id in the database
+            messagesRef
+              .where("message_id", "==", message_id)
+              .get()
+              .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                  // Delete the message document
+                  doc.ref
+                    .delete()
+                    .then(() => {
+                      console.log("Message deleted successfully");
+                      io.emit("messageDeleted", message_id);
+                    })
+                    .catch((error) => {
+                      console.error("Error deleting message:", error);
+                    });
+                });
+        
+                // Broadcast the deleted message_id to all connected clients
+                io.emit("messageDeleted", message_id);
+              })
+              .catch((error) => {
+                console.error("Error querying messages:", error);
+              });
+          });
+        
+    
+        // Handle disconnections
+        socket.on('disconnect', () => {
+            console.log('A user disconnected');
+        });
     });
 
-    // Handle disconnections
-    socket.on('disconnect', () => {
-        console.log('A user disconnected');
-    });
-});
+app.delete("/messages/:id", (req, res) => {
+    const messageId = req.params.id;
+    const messageRef = firebase.database().ref(`messages/${messageId}`);
+    messageRef
+      .remove()
+      .then(() => {
+        res.status(200).json({ message: "Message deleted successfully." });
+      })
+      .catch((error) => {
+        console.error("Error deleting message:", error);
+        res.status(500).json({ error: "Internal server error." });
+      });
+      
+  });
