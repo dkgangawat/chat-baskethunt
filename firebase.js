@@ -1,11 +1,13 @@
 var admin = require("firebase-admin");
 const bcrypt = require('bcrypt');
-var serviceAccount = require("./serviseAccountKey.json");
-
+require('dotenv').config()
+const SERVICE_ACCOUNT_KEY = require('./serviseAccountKey.json')
+console.log(process.env.SERVICE_ACCOUNT_KEY)
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://baskethuntchat-default-rtdb.firebaseio.com",
-    storageBucket: "baskethuntchat.appspot.com"
+
+    credential: admin.credential.cert(SERVICE_ACCOUNT_KEY),
+    databaseURL: process.env.DATABASE_URL,
+    storageBucket: process.env.STOREAGE_BUCKET
 });
 
 const hashPass = async(pass) => {
