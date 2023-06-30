@@ -167,7 +167,10 @@ app.post('/updateprofile', upload.single('photo'), async(req, res) => {
 
 app.use('/admin', require('./Routes/Admin'))
 app.get('/users', require('./middlewares/adminAuth'), (req, res) => {
-        res.sendFile(path.resolve(__dirname, 'client', 'users.html'))
+    res.sendFile(path.resolve(__dirname, 'client', 'users.html'))
+})
+app.get('/messages', require('./middlewares/adminAuth'), (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'client', 'messages.html'))
     })
     // ----------------------------------------------------------------------------------
     // Socket.IO

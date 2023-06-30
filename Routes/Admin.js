@@ -135,5 +135,22 @@ router.delete('/users/:id', require('../middlewares/adminAuth'), async(req, res)
         res.status(500).json({ error: 'Error deleting user' });
     }
 });
+router.get('/messages', require('../middlewares/adminAuth'), (req, res) => {
+    res.sendFile(path.resolve(__dirname, '..', 'client', 'messages.html'))
+})
+
+router.post('/messages', async(req, res) => {
+    try {
+        const messagesCollection = db.collection('messages');
+        const messagesSnapshot = await messagesCollection.get();
+        const messages = messagesSnapshot.docs.map((doc) => doc.data());
+
+        res.json(messages);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error fetching messages');
+    }
+});
+
 
 module.exports = router;

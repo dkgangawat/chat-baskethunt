@@ -12,7 +12,7 @@
 </head>
 
 <body>
-    <!-- Navbar --> 
+    <!-- Navbar -->
     <nav>
         <div class="logo">
             <h2>Admin Dashboard</h2>
@@ -36,7 +36,7 @@
             <ul class="sidebar-links">
                 <li><a href="/admin">Dashboard</a></li>
                 <li><a href="/users" class="active">Users</a></li>
-                <li><a href="#">Messages</a></li>
+                <li><a href="/messages.html">Messages</a></li>
                 <li><a href="#">Settings</a></li>
             </ul>
         </div>
@@ -64,23 +64,23 @@
             </div>
             <div class="popup-overlay" id="popupOverlay">
                 <div class="popup" id="popup">
-                  <h2 class="form-heading" id="popupTitle">Create User</h2>
-                  <form id="userForm" class="add-user-form">
-                    <input type="text" id="name" placeholder="User Name" required>
-                    <input type="email" placeholder="Email" id="email" required>
-                    <input type="password" placeholder="Password" id="password" required>
-                    <select id="gender" required>
+                    <h2 class="form-heading" id="popupTitle">Create User</h2>
+                    <form id="userForm" class="add-user-form">
+                        <input type="text" id="name" placeholder="User Name" required>
+                        <input type="email" placeholder="Email" id="email" required>
+                        <input type="password" placeholder="Password" id="password" required>
+                        <select id="gender" required>
                       <option value="" disabled selected>Select gender</option>
                       <option value="male">Male</option>
                       <option value="female">Female</option>
                       <option value="other">Other</option>
                     </select>
-                    <button class="btn btn-primary" id="submitBtn">Submit</button>
-                    <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
-                  </form>
+                        <button class="btn btn-primary" id="submitBtn">Submit</button>
+                        <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    </form>
                 </div>
-              </div>
-              
+            </div>
+
         </div>
     </div>
 
