@@ -43,22 +43,34 @@ socket.on('previousMessages', (messages) => {
         div.innerHTML = `
         <p>${message.content}</p>
         <p class="timestamp">${formattedTimestamp}</p>
-
-        `
+        <div class="dropdown temp">
+        <img width="18" height="18" class="dropbtn  first" src="https://img.icons8.com/ios-filled/50/menu-2.png" alt="menu-2"/>
+        <div class="dropdown-content">
+        <button class="delete-btn" data-message_id="${message.message_id}">Delete</button>
+        `;
         messagesList.appendChild(div);
+        scrollToBottom()
+        // Add event listener to the delete button
+    const deleteBtn = div.querySelector(".delete-btn");
+    deleteBtn.addEventListener("click", () => {
+      const message_id = deleteBtn.dataset.message_id;
+      socket.emit("deleteMessage", message_id);
+      div.remove();
     });
-    scrollToBottom()
+        
+    });
+    
 });
 
 const chatInput = document.getElementById('chat-input');
 const btnMessage = document.getElementById('btn_message');
 const sendMessage = () => {
     const message = chatInput.value;
-    if (message !== '') {
+    if (message !== "") {
         socket.emit('chatMessage', message);
-        chatInput.value = '';
+        chatInput.value = "";
     }
-}
+};
 btnMessage.addEventListener('click', (e) => {
     e.preventDefault();
     sendMessage()
@@ -81,11 +93,35 @@ socket.on('chatMessage', (message) => {
     div.innerHTML = `
         <p>${message.content}</p>
         <p class="timestamp">${formattedTimestamp}</p>
-        `
-    messagesList.appendChild(div);
-    scrollToBottom()
+        <div class="dropdown temp">
+        <img width="18" height="18" class="dropbtn  first" src="https://img.icons8.com/ios-filled/50/menu-2.png" alt="menu-2"/>
+        <div class="dropdown-content">
+        <button class="delete-btn" data-message_id="${message.message_id}">Delete</button>
+        `;
+        messagesList.appendChild(div);
+        scrollToBottom()
+    // Add event listener to the delete button
+    const deleteBtn = div.querySelector(".delete-btn");
+    deleteBtn.addEventListener("click", () => {
+      const message_id = deleteBtn.dataset.message_id;
+      socket.emit("deleteMessage", message_id);
+      div.remove();
+    });
+    
+    
     user.id !== message.id ? document.getElementById("Notification").play() : "";
 });
+
+// Client-side code (chat.js)
+socket.on("messageDeleted", (message_id) => {
+    const deletedMessage = document.querySelector(`[data-message_id="${message_id}"]`);
+    if (deletedMessage) {
+        deletedMessage.parentNode.remove();
+        location.reload(); // Refresh the page
+    }
+});
+
+
 
 function scrollToBottom() {
     messagesList.scrollTop = messagesList.scrollHeight
@@ -154,4 +190,4 @@ fileInput.addEventListener('change', function() {
             console.error('Error uploading photo:', error);
             // Handle the error
         });
-});
+});zzz
